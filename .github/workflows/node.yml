@@ -62,4 +62,4 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           REGION: ap-south-1
           FunctionName: InvalidateCloudfront
-          Payload: '{"DistributionId": "E35VNP872RLYJ6"}'
+          Payload: '{"DistributionId": "placeholder"}'
