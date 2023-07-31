@@ -24,7 +24,7 @@ jobs:
         with:
           node-version: 18.x
           cache: npm
-          cache-dependency-path: dozee/app/package-lock.json
+          cache-dependency-path: package-lock.json
 
       - name: Build
         # working-directory: dozee/app
