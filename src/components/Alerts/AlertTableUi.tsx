@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from "react";
 import PaginationCard from "../paginationCard";
-import { AlertSummary } from "../../../types/apiResponse/apis";
+import { AlertSummary } from "../../types/apiResponse/apis";
 import Link from "next/link";
 const NoOfOrgPerPage = 5;
 
@@ -36,8 +36,8 @@ function AlertTableUi({ alertDataForSelectedDate, date }: Props) {
           }}
           type="text"
           placeholder="search by Organization"
-                   className="border-none rounded-lg bg-gray-100 text-base w-full"
-  />
+          className="border-none rounded-lg bg-gray-100 text-base w-full"
+        />
       </div>
       <div className="relative overflow-x-auto rounded-2xl mt-5 border shadow">
         <table className="w-full overflow-hidden  text-sm text-left text-gray-500 dark:text-gray-400  justify-around  ">

@@ -12,11 +12,12 @@ export function getAlertSummary(AccessToken: string) {
   });
 }
 
-export function getDetectionSummary(AccessToken: string) {
+export function getDetectionSummary(AccessToken: string, pageName: number) {
+  const url = `https://insights.gateway.dozee.cloud/api/detection/find?page=${pageName}`;
   return axios({
     method: "get",
     maxBodyLength: Infinity,
-    url: `${BASE_URL}api/counters/detection/get?summary=true`,
+    url: url,
     headers: {
       Authorization: `Bearer ${AccessToken}`,
     },
@@ -43,5 +44,25 @@ export function getOrgName(orgID: string) {
     method: "get",
     maxBodyLength: Infinity,
     url: `https://console.senslabs.io/api/organizations/info/get?organizationId=${orgID}`,
+  });
+}
+
+export function getPairLogs(
+  Prefix: string,
+  Sequence: string,
+  Time: string,
+  AccessToken: string
+) {
+  return axios({
+    method: "get",
+    url: `${BASE_URL}api/users/get`,
+    params: {
+      prefix: Prefix,
+      sequence: Sequence,
+      to: Time,
+    },
+    headers: {
+      Authorization: `Bearer ${AccessToken}`,
+    },
   });
 }

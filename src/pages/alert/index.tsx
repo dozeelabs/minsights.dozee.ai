@@ -1,65 +1,45 @@
-import Head from "next/head";
 import React, { useMemo, useState } from "react";
-import { getServerSession } from "next-auth";
-import { useRouter } from "next/router";
-import { authOptions } from "../api/auth/[...nextauth]";
+import { parseCookie } from "@/utils/Auth";
 import {
   getAlertSummary,
   getOrgName,
-} from "../../../utils/package/serverSideApiCalls";
-import { AlertSummary } from "../../../types/apiResponse/apis";
-import { AlertOrgPageProps } from "../../../types/pageProps/pageProps";
+} from "../../utils/package/serverSideApiCalls";
+import { AlertSummary } from "../../types/apiResponse/apis";
+import { AlertOrgPageProps } from "../../types/pageProps/pageProps";
 import AlertOrgSummary from "@/components/Alerts/orgLevel/AlertOrgSummary";
 import AlertOrgTable from "@/components/Alerts/orgLevel/AlertOrgTable";
+import Head from "next/head";
 
 const paginationConstant = 6;
 
 export async function getServerSideProps<GetServerSideProps>(context: any) {
-  const session = await getServerSession(context.req, context.res, authOptions);
-  //check wheather user loged in or not
+  const orgId = context.query.orgId;
+  const { AccessToken } = parseCookie(context.req.headers.cookie);
 
-  if (session) {
-    const orgId = context.query.orgId;
-    if (!orgId) {
-      //if org is not selected navigate to index page
-      return {
-        redirect: {
-          destination: "/",
-          permanent: false,
-        },
-      };
-    }
-    try {
-      const summaryData = await getAlertSummary(session.user.AccessToken);
-      const orgname = await getOrgName(context.query.orgId);
-      const orgData: AlertSummary[] = summaryData.data.filter(
-        (org: AlertSummary) => {
-          return org.OrganizationId === orgId;
-        }
-      );
+  try {
+    const summaryData = await getAlertSummary(AccessToken);
+    const orgname = await getOrgName(context.query.orgId);
+    const orgData: AlertSummary[] = summaryData.data.filter(
+      (org: AlertSummary) => {
+        return org.OrganizationId === orgId;
+      }
+    );
 
-      return {
-        props: {
-          orgName: orgname.data[0].OrganizationName,
-          date: context.query.date ? context.query.date : null,
-          data: orgData,
-        },
-      };
-    } catch {
-      return {
-        redirect: {
-          destination: "/",
-          permanent: false,
-        },
-      };
-    }
+    return {
+      props: {
+        orgName: orgname.data[0].OrganizationName,
+        date: context.query.date ? context.query.date : null,
+        data: orgData,
+      },
+    };
+  } catch {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
   }
-  return {
-    redirect: {
-      destination: "/auth/signInPage",
-      permanent: false,
-    },
-  };
 }
 
 function Index({ orgName, date, data }: AlertOrgPageProps) {
@@ -111,7 +91,7 @@ function Index({ orgName, date, data }: AlertOrgPageProps) {
         </div>
       </main>
     </>
-   );
+  );
 }
 
 export default Index;

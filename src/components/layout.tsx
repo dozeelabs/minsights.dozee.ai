@@ -1,5 +1,4 @@
 import Head from "next/head";
-import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { signOut } from "next-auth/react";
@@ -12,9 +11,10 @@ type LayoutPageProps = {
 };
 
 export default function Layout({ children }: LayoutPageProps) {
-  const { status, data } = useSession();
   const [title, setTitle] = useState('Alerts');
   const router = useRouter()
+  // console.log('access token ->'+ data?.user.AccessToken);
+
   useEffect(() => {
     setTitle(document.title)
 
@@ -28,12 +28,12 @@ export default function Layout({ children }: LayoutPageProps) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-        {data && (
+        {true && (
           <div>
             <nav className="sticky top-0 bg-blue-theme z-50 shadow-lg p-1 px-2">
               <div className="flex justify-center items-center  ">
                 <LeftMenu
-                  operatorName={data?.user.name}
+                  operatorName={'test'}
                   tabs={[
                     { tabTitle: 'Alerts', tabPath: '/' },
                     { tabTitle: 'Detections', tabPath: '/detection' },

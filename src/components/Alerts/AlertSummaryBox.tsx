@@ -1,4 +1,6 @@
 import React, { SetStateAction } from "react";
+import MIN_DATE from "../../utils/minDate";
+
 type Props = {
   totalOrgs: number;
   totalAlertsInaDay: number;
