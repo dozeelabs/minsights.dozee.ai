@@ -1,5 +1,5 @@
 import React from "react";
-import { DeviceInformation } from "../../../types/apiResponse/apis";
+import { DeviceInformation } from "../../types/apiResponse/apis";
 
 type Props = {
   data: DeviceInformation[];

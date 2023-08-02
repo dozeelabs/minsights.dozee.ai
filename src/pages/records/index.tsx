@@ -2,63 +2,65 @@ import Head from "next/head";
 import React, { useState } from "react";
 import Router from "next/router";
 import { getServerSession } from "next-auth";
-import { authOptions } from "../api/auth/[...nextauth]";
-import { getDeviceDetails } from "../../../utils/package/serverSideApiCalls";
+import { getDeviceDetails } from "../../utils/package/serverSideApiCalls";
 import axios from "axios";
-import { RecordsPageProps } from "../../../types/pageProps/pageProps";
+import { RecordsPageProps } from "../../types/pageProps/pageProps";
 import Link from 'next/link';
+import { parseCookie } from "@/utils/Auth";
 // import refdc from '../records/trends'
 export async function getServerSideProps<GetServerSideProps>(context: any) {
-  const session = await getServerSession(context.req, context.res, authOptions);
-  if (!session) {
-    return {
-      redirect: {
-        destination: "/auth/signInPage",
-        permanent: false,
-      },
-    };
-  }
+  const { AccessToken } = parseCookie(context.req.headers.cookie);
   let data = null;
+  let pairLogsDetails = null;
   if (context.query.prefix && context.query.number) {
     try {
       const response = await getDeviceDetails(
         context.query.prefix,
         context.query.number,
-        session.user.AccessToken
+        AccessToken
       );
       data = response.data;
+      const pairLogs = await getPairLogs(
+        context.query.prefix,
+        context.query.number,
+        context.query.time,
+        AccessToken
+      );
+      pairLogsDetails = pairLogs.data;
     } catch {
       console.log("there was an error");
     }
   }
   return {
     props: {
-      data: data,
+      data,
+      pairLogsDetails,
     },
   };
 }
+
 
 function Index({ data }: RecordsPageProps) {
   const [devicePrefix, setDevicePrefix] = useState("DP");
   const [deviceNumber, setDeviceNumber] = useState("");
   const [dateInput, setDateInput] = useState(
     new Date().toLocaleDateString("fr-CA")
-  );  const [page, setPage] = useState(0);
+  ); const [page, setPage] = useState(0);
 
   function handelDeviceSearch(e: React.FormEvent<HTMLFormElement>) {
-     e.preventDefault();
+    e.preventDefault();
     Router.push({
       pathname: `/records`,
       query: {
         prefix: devicePrefix,
         number: deviceNumber,
       },
-    }); 
+    });
   }
-  const pushToTrends = () => {    
+  const pushToTrends = () => {
     Router.push({
-      pathname:"../records/trends",
-      query:{
+      pathname: "../records/trends",
+      query: {
 
       }
     })
@@ -72,12 +74,12 @@ function Index({ data }: RecordsPageProps) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="h-[896px]">
-      {/* <button className="bg-red-500"
+        {/* <button className="bg-red-500"
         onClick={() =>pushToTrends()}>  Trends
         </button> */}
         <div className="p-4 max-w-[1800px] m-auto flex flex-col  overflow-hidden">
           <form onSubmit={handelDeviceSearch}>
-          <div className="flex flex-row pb-5">
+            <div className="flex flex-row pb-5">
               <input
                 type="date"
                 value={dateInput}
@@ -116,14 +118,14 @@ function Index({ data }: RecordsPageProps) {
                     />
                   </div>
 
-                      <button
-                        type="submit"
-                        className="bg-blue-theme p-1  rounded-lg w-3/12 text-white right tracking-wide overflow-hidden"
-                      >
-                        <h5>Search</h5>
-                      </button>
-                    {/* </div> */}
-                  </div>
+                  <button
+                    type="submit"
+                    className="bg-blue-theme p-1  rounded-lg w-3/12 text-white right tracking-wide overflow-hidden"
+                  >
+                    <h5>Search</h5>
+                  </button>
+                  {/* </div> */}
+                </div>
                 {/* </div> */}
 
               </div>

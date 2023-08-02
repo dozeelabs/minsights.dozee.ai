@@ -1,56 +1,21 @@
-import Head from "next/head";
-import React, { useEffect, useMemo, useState } from "react";
-import { authOptions } from "../api/auth/[...nextauth]";
-import { getServerSession } from "next-auth/next";
-import { DetectionSummaryResponse, OrgNamesApiResponse, ModifiedDetectionData } from "../../../types/apiResponse/apis";
-import { detectionPageProps } from "../../../types/pageProps/pageProps";
-import { getDetectionSummary, getOrgName } from "../../../utils/package/serverSideApiCalls";
+import React, { useMemo, useState } from "react";
+import { fetchAllDetectionData } from "@/utils/detectionDataModification";
+import { ModifiedDetectionData } from "../../types/apiResponse/apis";
 import DetectionSummaryBox from "@/components/Detection/DetectionSummaryBox";
 import DetectionTableUi from "@/components/Detection/DetectionTableUi";
-import detectionDataModification from "../../../utils/detectionDataModification";
+import { parseCookie } from "@/utils/Auth";
+import MIN_DATE from "@/utils/minDate";
+import Head from "next/head";
 
 export async function getServerSideProps<GetServerSideProps>(context: any) {
-  const session = await getServerSession(context.req, context.res, authOptions);
+  const { AccessToken } = parseCookie(context.req.headers.cookie);
 
-  if (!session) {
-    //user is not logged in this this will redirect to the sigin page
-    return {
-      redirect: {
-        destination: "/auth/signInPage",
-        permanent: false,
-      },
-    };
-  }
   try {
-    let DetectionData = await getDetectionSummary(session.user.AccessToken);
-
-    let sortedData = DetectionData.data;
-    let set = new Set<string>();
-    sortedData.forEach((i: DetectionSummaryResponse) => {
-      set.add(i.OrganizationId);
-    });
-    let url = "";
-    set.forEach((i) => {
-      url += i + ",";
-    });
-
-    const orgNames = await getOrgName(url.slice(0, -1));
-    const names: OrgNamesApiResponse[] = orgNames.data;
-
-    let namesMap: any = {};
-    names.forEach((name) => {
-      namesMap[name.OrganizationId] = name.OrganizationName;
-    });
-
-    let includeOrgNameInData = sortedData.map(
-      (org: DetectionSummaryResponse) => {
-        return { ...org, OrganizationName: namesMap[org.OrganizationId] };
-      }
-    );
+    const res = await fetchAllDetectionData(AccessToken);
 
     return {
       props: {
-        data: includeOrgNameInData,
+        data: res,
       },
     };
   } catch {
@@ -62,16 +27,19 @@ export async function getServerSideProps<GetServerSideProps>(context: any) {
   }
 }
 
-function Index({ data }: detectionPageProps) {
-  const [dateInput, setDateInput] = useState(
+
+function Index({ data }: any) {
+  const [dateInput, setDateInput] = useState<string>(
     new Date().toLocaleDateString("fr-CA")
   );
-  const ModifiedDetectionData = useMemo(() => {
-    return detectionDataModification(data);
-  }, [data]);
+
   const detectionDataForSelectedDate: ModifiedDetectionData[] = useMemo(() => {
-    return ModifiedDetectionData[dateInput];
-  }, [dateInput, ModifiedDetectionData]);
+    return data[dateInput].sort(
+      (a: ModifiedDetectionData, b: ModifiedDetectionData) => {
+        return b.totalUploads - a.totalUploads;
+      }
+    );
+  }, [dateInput]);
 
   return (
     <>
@@ -87,8 +55,11 @@ function Index({ data }: detectionPageProps) {
             <div className="flex flex-row-reverse pb-5">
               <input
                 type="date"
+                min={MIN_DATE}
+                max={new Date().toLocaleDateString("fr-CA")}
                 value={dateInput}
                 onChange={(e) => {
+                  // setPage(0);
                   setDateInput(e.target.value);
                 }}
                 className="border-none rounded-lg bg-gray-100 "

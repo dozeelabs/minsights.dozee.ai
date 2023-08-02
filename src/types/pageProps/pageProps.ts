@@ -1,8 +1,8 @@
-import { AlertSummary } from "../apiRespnse/apis";
+import { AlertSummary, DevicePairLogsResponse } from "../apiResponse/apis";
 import {
   DetectionSummaryResponse,
   DeviceInformation,
-} from "../apiRespnse/apis";
+} from "../apiResponse/apis";
 
 export interface AlertPageProps {
   alertData: AlertSummary[];
@@ -14,7 +14,10 @@ export interface AlertOrgPageProps {
 }
 export interface detectionPageProps {
   data: DetectionSummaryResponse[];
+  data2: any;
 }
 export interface RecordsPageProps {
   data: DeviceInformation[] | null;
+  pairLogsDetails: DevicePairLogsResponse[];
 }
+

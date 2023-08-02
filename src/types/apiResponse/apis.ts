@@ -65,12 +65,23 @@ export interface DevicePairLogsResponse {
   NewGuestId: string;
   CreatedAt: string;
 }
+export interface detctionData {
+  DeviceId: string;
+  Epochs: number;
+  br: number | null;
+  brcc: number | null;
+  hr: number | null;
+  hrcc: number | null;
+  orgId: string;
+  source: number;
+}
 export interface ModifiedDetectionData {
   orgId: string;
   orgName: string;
-  true: DetectionSummaryResponse;
-  false: DetectionSummaryResponse;
+  totalUploads: number;
+  data: detctionData[];
 }
+
 export interface DetectionStatsForSelectedDate {
   detections: number;
   uploads: number;

@@ -1,62 +1,40 @@
 import Head from "next/head";
 import styles from "@/styles/Home.module.css";
-import { authOptions } from "../pages/api/auth/[...nextauth]";
 import { getServerSession } from "next-auth/next";
 import jwt_decode from "jwt-decode";
 import axios from "axios";
-import { AlertSummary, OrgNamesApiResponse } from "../../types/apiResponse/apis";
+import { AlertSummary, OrgNamesApiResponse } from "../types/apiResponse/apis";
 import { useState, useMemo, useEffect } from "react";
-import { AlertPageProps } from "../../types/pageProps/pageProps";
+import { AlertPageProps } from "../types/pageProps/pageProps";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import { getAlertSummary, getOrgName } from "../../utils/package/serverSideApiCalls";
+import { getAlertSummary, getOrgName } from "../utils/package/serverSideApiCalls";
 import AlertSummaryBox from "@/components/Alerts/AlertSummaryBox";
 import AlertTableUi from "@/components/Alerts/AlertTableUi";
+import { parseCookie } from "@/utils/Auth";
 
 const NoOfOrgPerPage = 5;
 
 export async function getServerSideProps<GetServerSideProps>(context: any) {
-  const session = await getServerSession(context.req, context.res, authOptions);
 
-  if (!session) {
-    //user is not logged in this this will redirect to the sigin page
-    return {
-      redirect: {
-        destination: "/auth/signInPage",
-        permanent: false,
-      },
-    };
-  } else {
-    const decode: any = jwt_decode(session.user.AccessToken);
-    //encode the accessToken
-    if (parseInt(decode.exp) < new Date().getTime() / 1000) {
-      //if acessToken is expired this will take to signin page , in sigin page this case is handeled in useEffect
-      return {
-        redirect: {
-          destination: "/auth/signInPage",
-          permanent: false,
-        },
-      };
-    }
-  }
-  //if every this is verified then fetch the data
+  const { AccessToken } = parseCookie(context.req.headers.cookie);
 
-  const alertData = await getAlertSummary(session.user.AccessToken);
-  let data: AlertSummary[] = alertData.data;
-  //sort the data in decending order in terms of number of allerts generated in an org
-  data.sort((a, b) => {
-    return b.Sum > a.Sum ? 1 : -1;
-  });
-  let set = new Set<string>();
-  data.forEach((i) => {
-    set.add(i.OrganizationId);
-  });
-  let url = "";
-  set.forEach((i) => {
-    url += i + ",";
-  });
   try {
+    const alertData = await getAlertSummary(AccessToken);
+    let data: AlertSummary[] = alertData.data;
+    //sort the data in decending order in terms of number of allerts generated in an org
+    data.sort((a, b) => {
+      return b.Sum > a.Sum ? 1 : -1;
+    });
+    let set = new Set<string>();
+    data.forEach((i) => {
+      set.add(i.OrganizationId);
+    });
+    let url = "";
+    set.forEach((i) => {
+      url += i + ",";
+    });
     const orgNames = await getOrgName(url.slice(0, -1));
     const names: OrgNamesApiResponse[] = orgNames.data;
 
@@ -77,7 +55,7 @@ export async function getServerSideProps<GetServerSideProps>(context: any) {
   } catch {
     return {
       props: {
-        alertData: data,
+        alertData: [],
       },
     };
   }

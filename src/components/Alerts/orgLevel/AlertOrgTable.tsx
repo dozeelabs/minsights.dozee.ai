@@ -1,5 +1,5 @@
 import React, { useMemo, useState, useEffect } from "react";
-import { AlertSummary } from "../../../../types/apiResponse/apis";
+import { AlertSummary } from "../../../types/apiResponse/apis";
 import PaginationCard from "@/components/paginationCard";
 const paginationConstant = 15;
 type Props = {

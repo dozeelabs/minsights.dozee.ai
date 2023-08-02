@@ -1,41 +1,26 @@
-import Head from "next/head";
 import React, { useMemo, useState } from "react";
-import { authOptions } from "@/pages/api/auth/[...nextauth]";
-import { getServerSession } from "next-auth";
-import { DetectionSummaryResponse } from "../../../../types/apiResponse/apis";
-import { getDetectionSummary, getOrgName } from "../../../../utils/package/serverSideApiCalls";
-import { useRouter } from "next/router";
-import { detectionDataModificationOrgLevel } from "../../../../utils/detectionDataModification";
+import { parseCookie } from "@/utils/Auth";
+import { fetchAllDetectionData } from "@/utils/detectionDataModification";
+import { ModifiedDetectionData } from "../../../types/apiResponse/apis";
 import DetectionTableUi from "@/components/Detection/orglevel/DetectionTableUi";
 import SummaryBox from "@/components/Detection/orglevel/summaryBox";
-
-const paginationConstant = 5;
+import Head from "next/head";
 interface Props {
-  data: DetectionSummaryResponse[];
+  data: any;
   date: string;
   orgName: string;
 }
+
 export async function getServerSideProps<GetServerSideProps>(context: any) {
-  const session = await getServerSession(context.req, context.res, authOptions);
-
-  if (!session) {
-    //user is not logged in this this will redirect to the sigin page
-    return {
-      redirect: {
-        destination: "/auth/signInPage",
-        permanent: false,
-      },
-    };
-  }
+  const { AccessToken } = parseCookie(context.req.headers.cookie);
   try {
-    let orgData = await getDetectionSummary(session.user.AccessToken);
-    const name = await getOrgName(context.query.orgId);
-
-    const filteredData: DetectionSummaryResponse[] = orgData.data.filter(
-      (org: DetectionSummaryResponse) => {
-        return org.OrganizationId === context.query.orgId;
-      }
-    );
+    const response = await fetchAllDetectionData(AccessToken);
+    const filteredData: any = {};
+    for (let date in response) {
+      filteredData[date] = response[date].filter((org: any) => {
+        return org.orgId === context.query.orgId;
+      });
+    }
 
     if (filteredData.length === 0) {
       return {
@@ -49,7 +34,7 @@ export async function getServerSideProps<GetServerSideProps>(context: any) {
       props: {
         data: filteredData,
         date: context.query.date,
-        orgName: name.data[0].OrganizationName,
+        orgName: filteredData[context.query.date][0].orgName,
       },
     };
   } catch {
@@ -61,21 +46,25 @@ export async function getServerSideProps<GetServerSideProps>(context: any) {
     };
   }
 }
-function Index({ data, date, orgName }: Props) {
-  const [dateInput, setDateInput] = useState(
+function Index({ data, date, orgName }: any) {
+  const [dateInput, setDateInput] = useState<string>(
     date ? date : new Date().toLocaleDateString("fr-CA")
   );
 
-  const [page, setPage] = useState(0);
-
-  const usefullData = useMemo(() => {
-    return detectionDataModificationOrgLevel(data);
-  }, []);
-  const dataForSelecetdDate = useMemo(() => {
-    return usefullData[dateInput] || [];
+  const dataForSelecetdDate: ModifiedDetectionData[] = useMemo(() => {
+    try {
+      const temp: ModifiedDetectionData = {
+        ...data[dateInput][0],
+      };
+      temp.data.sort((a, b) => b.Epochs - a.Epochs);
+      return [temp];
+    } catch {
+      return [];
+    }
   }, [dateInput]);
 
   return (
+
     <>
       <Head>
         <title>Detection</title>
@@ -83,17 +72,15 @@ function Index({ data, date, orgName }: Props) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div>
       <SummaryBox
-        totaluser={dataForSelecetdDate?.length}
+        totaluser={dataForSelecetdDate[0]?.data.length}
         orgName={orgName}
-        setPage={setPage}
         setDateInput={setDateInput}
         dateInput={dateInput}
-        data={data}
+        uploadsForSelecetedDate={dataForSelecetdDate[0]?.totalUploads}
       />
+
       <DetectionTableUi dataForSelecetdDate={dataForSelecetdDate} />
-    </div>
     </>
   );
 }
