@@ -1,9 +1,9 @@
 import React, { useEffect, useMemo, useState } from "react";
 import PaginationCard from "@/components/paginationCard";
-import { ModifiedDetectionData } from "../../../types/apiResponse/apis";
-const paginationConstant = 7;
+import { detctionData } from "../../../types/apiResponse/apis";
+const paginationConstant = 10;
 type Props = {
-  dataForSelecetdDate: ModifiedDetectionData[];
+  dataForSelecetdDate: detctionData[];
 };
 
 function DetectionTableUi({ dataForSelecetdDate }: Props) {
@@ -11,8 +11,8 @@ function DetectionTableUi({ dataForSelecetdDate }: Props) {
   const [page, setPage] = useState(0);
 
   const pagination = useMemo(() => {
-    const length = dataForSelecetdDate[0]?.data.length || 0;
-    return Array(Math.ceil(length / 10))
+    const length = dataForSelecetdDate.length || 0;
+    return Array(Math.ceil(length / paginationConstant))
       .fill(0)
       .map((_, i) => i + 1);
   }, [dataForSelecetdDate]);
@@ -37,22 +37,14 @@ function DetectionTableUi({ dataForSelecetdDate }: Props) {
           />
         </div>
         <div className="flex flex-col gap-8 p-1 mt-3">
-          {/* {dataForSelecetdDate
-            ?.filter((item: OrgLevelData) => {
-              return filterById === ""
-                ? item
-                : item.userId.toLowerCase().includes(filterById.toLowerCase());
-            })
-            .slice(
-              page * paginationConstant,
-              page * paginationConstant + paginationConstant
-            )
-            .map((d: OrgLevelData, i: number) => ( */}
           <div className="flex gap-2 border rounded-lg p-2">
             <div>
               <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400 ">
                 <tbody>
-                  {dataForSelecetdDate[0]?.data
+                  {dataForSelecetdDate.length === 0 && (
+                    <tr>no data for selecetd date</tr>
+                  )}
+                  {dataForSelecetdDate
                     .filter((item) => {
                       return filterById === ""
                         ? item
@@ -72,7 +64,7 @@ function DetectionTableUi({ dataForSelecetdDate }: Props) {
                         >
                           <th
                             scope="row"
-                            className="px-2 py-1 font-normal text-gray-900 whitespace-nowrap dark:text-white cursor-pointer"
+                            className="px-1 py-1 font-normal text-gray-900 whitespace-nowrap dark:text-white cursor-pointer"
                           >
                           </th>
 
@@ -82,17 +74,25 @@ function DetectionTableUi({ dataForSelecetdDate }: Props) {
                             {/* <td className="pt-1 text-xs font-semibold">Detection Percentage : {m.true && m.false ? Math.round((m.true / (m.false * 4) * 100)) + '%' : "--"}</td> */}
                             <div className="flex flex-row justify-between">
 
-                              <td className="pt-1 text-xs">Uploads :  {i.Epochs}</td>
+                              <td className="pt-1 text-xs">Epochs :  {i.Epochs}</td>
+                              {/* <td className="pt-1 text-xs">Detection :  --</td> */}
+                            </div>
 
-                              <td className="pt-1 text-xs">HR : {i.hr || "--"}</td>
-                              <td className="pt-1 text-xs">RR : {i.br || "--"}</td>
+                            <div className="flex flex-row justify-between">
+
+                              <td className="pt-1 text-xs">HR : {i.hr ? Math.round((i.hr / i.Epochs) * 100) + "%" : "--"}</td>
+                              <td className="pt-1 text-xs">RR : {i.br ? Math.round((i.br / i.Epochs) * 100) + "%" : "--"}</td>
 
                               {/* <td className="pt-1 text-xs">HeartRates : {i.hr || "--"}</td>
                               <td className="pt-1 text-xs">HeartRatesWithConfidence : {i.hrcc || "--"}</td> */}
                             </div>
                             <div className="flex flex-row justify-between">
-                              <td className="pt-1 text-xs">HRC : {i.hrcc || "--"}</td>
-                              <td className="pt-1 text-xs">RRC : {i.brcc || "--"}</td>
+                              <td className="pt-1 text-xs">HRc : {i.hrcc
+                                ? Math.round((i.hrcc / i.Epochs) * 100) + "%"
+                                : "--"}</td>
+                              <td className="pt-1 text-xs">RRc : {i.brcc
+                                ? Math.round((i.brcc / i.Epochs) * 100) + "%"
+                                : "--"}</td>
                             </div>
                           </div>
                         </tr>

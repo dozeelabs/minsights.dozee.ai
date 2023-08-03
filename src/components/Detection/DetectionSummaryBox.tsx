@@ -1,10 +1,11 @@
 import React, { SetStateAction, useMemo } from "react";
+import MIN_DATE from "@/utils/minDate";
 import {
-  DetectionStatsForSelectedDate,
+  ModifiedDetectionDataForSelectedDate,
   ModifiedDetectionData,
-} from "../../types/apiResponse/apis";
+} from "@/types/apiResponse/apis";
 type props = {
-  detectionDataForSelectedDate: ModifiedDetectionData[];
+  detectionDataForSelectedDate: ModifiedDetectionDataForSelectedDate;
   dateInput: string;
   setDateInput: React.Dispatch<SetStateAction<string>>;
 };
@@ -21,30 +22,61 @@ function DetectionSummaryBox({
           {" "}
           <h3 className="p-1 font-medium">Detection Summary</h3>
         </div>
-        <div className="flex justify-between">
+        {detectionDataForSelectedDate && (
+          <div className="flex justify-between">
 
-          <div className="flex flex-col flex-1 justify-between">
-            <span className="flex flex-row justify-between">
-              {" "}
-              <h4 className="font-medium p-1">
-                Total orgs: {detectionDataForSelectedDate?.length}
-              </h4>{" "}
-              <h4 className="font-medium p-1">
-                Total uploads:
-              </h4>{" "}
-              {/* <h4 className="font-medium  p-1">
-                Detection :              {detectionStatsForSelectedDate
-                  ? Math.round(
-                    (detectionStatsForSelectedDate.detections /
-                      (detectionStatsForSelectedDate.uploads * 4)) *
+            <div className="flex flex-col flex-1 justify-between">
+              <span className="flex flex-row justify-between">
+                <h4 className="font-medium p-1">
+                  Total orgs: {detectionDataForSelectedDate.data.length}
+                </h4>{" "}
+                <h4 className="font-medium p-1">
+                  Total epochs: {detectionDataForSelectedDate.stats.Epochs}
+                </h4>{" "}
+              </span>
+              <span className="flex flex-row justify-between">
+                <h4 className="font-medium p-1">
+                  HR: {" "}
+                  {Math.round(
+                    (detectionDataForSelectedDate.stats.hr /
+                      detectionDataForSelectedDate.stats.Epochs) *
                     100
-                  ) + "%"
-                  : "--"}
-              </h4> */}
-            </span>
-            <span>
-            </span>
-            {/* <div className="flex flex-row justify-between">
+                  )}
+                  %
+                </h4>{" "}
+                <h4 className="font-medium p-1">
+                  RR: {" "}
+                  {Math.round(
+                    (detectionDataForSelectedDate.stats.br /
+                      detectionDataForSelectedDate.stats.Epochs) *
+                    100
+                  )}
+                  %
+                </h4>{" "}
+              </span>
+              <span className="flex flex-row justify-between">
+                <h4 className="font-medium p-1">
+                  HRC: {" "}
+                  {Math.round(
+                    (detectionDataForSelectedDate.stats.hrcc /
+                      detectionDataForSelectedDate.stats.Epochs) *
+                    100
+                  )}
+                  %
+                </h4>{" "}
+                <h4 className="font-medium p-1">
+                  RRC: {" "}
+                  {Math.round(
+                    (detectionDataForSelectedDate.stats.brcc /
+                      detectionDataForSelectedDate.stats.Epochs) *
+                    100
+                  )}
+                  %
+                </h4>{" "}
+              </span>
+              <span>
+              </span>
+              {/* <div className="flex flex-row justify-between">
               {" "}
               <h4 className="font-medium  p-1">
                 Uploads : {detectionStatsForSelectedDate?.uploads}
@@ -53,8 +85,9 @@ function DetectionSummaryBox({
                 Detections : {detectionStatsForSelectedDate?.detections}
               </h4>
             </div> */}
+            </div>
           </div>
-        </div>
+        )}
       </div>
       <div>
       </div>

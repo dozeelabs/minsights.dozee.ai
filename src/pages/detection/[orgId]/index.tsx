@@ -1,7 +1,9 @@
 import React, { useMemo, useState } from "react";
 import { parseCookie } from "@/utils/Auth";
 import { fetchAllDetectionData } from "@/utils/detectionDataModification";
-import { ModifiedDetectionData } from "../../../types/apiResponse/apis";
+import {
+  ModifiedDetectionData, detctionData,
+} from "../../../types/apiResponse/apis";
 import DetectionTableUi from "@/components/Detection/orglevel/DetectionTableUi";
 import SummaryBox from "@/components/Detection/orglevel/summaryBox";
 import Head from "next/head";
@@ -17,7 +19,7 @@ export async function getServerSideProps<GetServerSideProps>(context: any) {
     const response = await fetchAllDetectionData(AccessToken);
     const filteredData: any = {};
     for (let date in response) {
-      filteredData[date] = response[date].filter((org: any) => {
+      filteredData[date] = response[date].data.filter((org: any) => {
         return org.orgId === context.query.orgId;
       });
     }
@@ -50,18 +52,17 @@ function Index({ data, date, orgName }: any) {
   const [dateInput, setDateInput] = useState<string>(
     date ? date : new Date().toLocaleDateString("fr-CA")
   );
+  console.log(data);
 
   const dataForSelecetdDate: ModifiedDetectionData[] = useMemo(() => {
-    try {
-      const temp: ModifiedDetectionData = {
-        ...data[dateInput][0],
-      };
-      temp.data.sort((a, b) => b.Epochs - a.Epochs);
-      return [temp];
-    } catch {
-      return [];
+    if (data[dateInput]) {
+      data[dateInput][0].data.sort((a: detctionData, b: detctionData) => {
+        return b.Epochs - a.Epochs;
+      });
     }
+    return data[dateInput] || [];
   }, [dateInput]);
+  console.log(dataForSelecetdDate);
 
   return (
 
@@ -73,14 +74,16 @@ function Index({ data, date, orgName }: any) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <SummaryBox
-        totaluser={dataForSelecetdDate[0]?.data.length}
+        totalDevice={dataForSelecetdDate[0]?.data.length}
         orgName={orgName}
         setDateInput={setDateInput}
         dateInput={dateInput}
-        uploadsForSelecetedDate={dataForSelecetdDate[0]?.totalUploads}
+        stats={dataForSelecetdDate[0]?.stats}
       />
 
-      <DetectionTableUi dataForSelecetdDate={dataForSelecetdDate} />
+      <DetectionTableUi
+        dataForSelecetdDate={dataForSelecetdDate[0]?.data || []}
+      />
     </>
   );
 }

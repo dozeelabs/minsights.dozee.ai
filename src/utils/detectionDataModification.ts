@@ -1,4 +1,4 @@
-import { OrgNamesApiResponse } from "../types/apiResponse/apis";
+import { OrgNamesApiResponse } from "../types/apiResponse/apis"
 import { getDetectionSummary, getOrgName } from "./package/serverSideApiCalls";
 
 // export default function detectionDataModification(
@@ -138,6 +138,13 @@ type detection = {
   HeartRatesWithConfidence?: number;
   _id: id;
 };
+type Stats = {
+  Epochs: number;
+  hr: number;
+  hrcc: number;
+  br: number;
+  brcc: number;
+};
 export async function fetchAllDetectionData(AccessToken: string) {
   let resultArr: any[] = [];
 
@@ -203,19 +210,53 @@ export async function modification(inputArr: detection[]) {
   let finalData: any = {};
   for (let date in map) {
     if (!finalData[date]) {
-      finalData[date] = [];
+      finalData[date] = { stats: {}, data: [] };
     }
     for (let org in map[date]) {
-      const count = map[date][org].reduce((sum: number, i: detection) => {
-        return sum + (i.Epochs || 0);
-      }, 0);
+      const count = map[date][org].reduce(
+        (sum: Stats, i: any) => {
+          sum["Epochs"] += i.Epochs || 0;
+          sum["hr"] += i.hr || 0;
+          sum["hrcc"] += i.hrcc || 0;
+          sum["br"] += i.br || 0;
+          sum["brcc"] += i.brcc || 0;
+          return sum;
+        },
+        {
+          Epochs: 0,
+          hr: 0,
+          hrcc: 0,
+          br: 0,
+          brcc: 0,
+        }
+      );
       const temp = {
         orgId: org,
         orgName: namesMap[org],
         data: map[date][org],
-        totalUploads: count,
+        stats: count,
       };
-      finalData[date].push(temp);
+      for (let date in finalData) {
+        const stats = finalData[date].data.reduce(
+          (sum: Stats, i: any) => {
+            sum["Epochs"] += i.stats.Epochs || 0;
+            sum["hr"] += i.stats.hr || 0;
+            sum["hrcc"] += i.stats.hrcc || 0;
+            sum["br"] += i.stats.br || 0;
+            sum["brcc"] += i.stats.brcc || 0;
+            return sum;
+          },
+          {
+            Epochs: 0,
+            hr: 0,
+            hrcc: 0,
+            br: 0,
+            brcc: 0,
+          }
+        );
+        finalData[date].stats = stats;
+      }
+      finalData[date].data.push(temp);
     }
   }
 

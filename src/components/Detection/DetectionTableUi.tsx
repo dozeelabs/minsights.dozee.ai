@@ -1,17 +1,19 @@
 import React, { useEffect, useState, useMemo } from "react";
-import { ModifiedDetectionData } from "../../types/apiResponse/apis";
+import { ModifiedDetectionDataForSelectedDate } from "@/types/apiResponse/apis";
 import PaginationCard from "../paginationCard";
 import Link from "next/link";
-const paginationConstant = 7;
+const paginationConstant = 10;
+
 type Props = {
-  detectionDataForSelectedDate: ModifiedDetectionData[];
+  detectionDataForSelectedDate: ModifiedDetectionDataForSelectedDate;
   dateInput: string;
 };
 function DetectionTableUi({ dateInput, detectionDataForSelectedDate }: Props) {
   const [page, setPage] = useState<number>(0);
   const [searchOrg, setSearchOrg] = useState<string>("");
   const pagination: number[] = useMemo(() => {
-    const totalOrgsForSelectedDate = detectionDataForSelectedDate?.length || 0;
+    const totalOrgsForSelectedDate =
+      detectionDataForSelectedDate?.data.length || 0;
 
     return Array(Math.ceil(totalOrgsForSelectedDate / paginationConstant))
       .fill(0)
@@ -45,7 +47,7 @@ function DetectionTableUi({ dateInput, detectionDataForSelectedDate }: Props) {
             </thead>
             <tbody>
               {detectionDataForSelectedDate &&
-                detectionDataForSelectedDate
+                detectionDataForSelectedDate.data
                   .filter((org) => {
                     return searchOrg === ""
                       ? org
@@ -81,13 +83,24 @@ function DetectionTableUi({ dateInput, detectionDataForSelectedDate }: Props) {
                             <td className="pt-4 text-xs">Devices : {org.data.length}</td>
                           </div>
                           <div className="">
-
-                            <td className="pt-4 text-xs text-left">Uploads : {org.totalUploads}</td>
+                            <td className="pt-4 text-xs text-left">Epochs : {org.stats.Epochs}</td>
                           </div>
-                          {/* <div className="">
-
-                          <td className="pt-4 text-xs font-semibold text-left">{org.true && org.false ? Math.round((org.true.Sum / (org.false.Sum * 4) * 100)) + '%' : "--"} </td>
-                        </div> */}
+                        </div>
+                        <div className="flex flex-row justify-between">
+                          <div className=" ">
+                            <td className="pt-1 text-xs">HR% : {Math.round((org.stats.hr / org.stats.Epochs) * 100)}%</td>
+                          </div>
+                          <div className="">
+                            <td className="pt-1 text-xs">RR% : {Math.round((org.stats.br / org.stats.Epochs) * 100)}%</td>
+                          </div>
+                        </div>
+                        <div className="flex flex-row justify-between">
+                          <div className=" ">
+                            <td className="pt-1 text-xs text-left">HRC% : {Math.round((org.stats.hrcc / org.stats.Epochs) * 100)}%</td>
+                          </div>
+                          <div className="">
+                            <td className="pt-1 text-xs text-left">RRC% : {Math.round((org.stats.brcc / org.stats.Epochs) * 100)}%</td>
+                          </div>
                         </div>
                       </th>
                     </tr>

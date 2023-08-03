@@ -1,25 +1,19 @@
-import Head from "next/head";
-import styles from "@/styles/Home.module.css";
-import { getServerSession } from "next-auth/next";
-import jwt_decode from "jwt-decode";
-import axios from "axios";
+import { parseCookie } from "../utils/Auth";
 import { AlertSummary, OrgNamesApiResponse } from "../types/apiResponse/apis";
 import { useState, useMemo, useEffect } from "react";
 import { AlertPageProps } from "../types/pageProps/pageProps";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/router";
-import Link from "next/link";
-import { getAlertSummary, getOrgName } from "../utils/package/serverSideApiCalls";
-import AlertSummaryBox from "@/components/Alerts/AlertSummaryBox";
-import AlertTableUi from "@/components/Alerts/AlertTableUi";
-import { parseCookie } from "@/utils/Auth";
-
-const NoOfOrgPerPage = 5;
+import { getAlertSummary } from "../utils/package/serverSideApiCalls";
+import AlertSummaryBox from "../components/Alerts/AlertSummaryBox";
+import { getOrgName } from "../utils/package/serverSideApiCalls";
+import AlertTableUi from "../components/Alerts/AlertTableUi";
+import jwtDecode from "jwt-decode";
+import Head from "next/head";
 
 export async function getServerSideProps<GetServerSideProps>(context: any) {
-
   const { AccessToken } = parseCookie(context.req.headers.cookie);
-
+  let decode: any = jwtDecode(AccessToken);
+  decode = decode.sub;
+  decode = JSON.parse(decode);
   try {
     const alertData = await getAlertSummary(AccessToken);
     let data: AlertSummary[] = alertData.data;
@@ -50,21 +44,28 @@ export async function getServerSideProps<GetServerSideProps>(context: any) {
     return {
       props: {
         alertData: finalData,
+        userName: decode["FirstName"],
       },
     };
   } catch {
     return {
-      props: {
-        alertData: [],
+      redirect: {
+        destination: "/detection",
+        permanent: false,
       },
     };
+    // return {
+    //   props: {
+    //     alertData: [],
+    //     userName: decode["FirstName"],
+    //   },
+    // };
   }
 }
 
-export default function Home({ alertData }: AlertPageProps) {
+export default function Home({ alertData, userName }: AlertPageProps) {
   const [date, setDate] = useState(new Date().toLocaleDateString("fr-CA"));
 
-  const session = useSession();
   const alertDataForSelectedDate = useMemo(() => {
     return alertData.filter((org) => org.Date === date);
   }, [date]);
@@ -76,8 +77,12 @@ export default function Home({ alertData }: AlertPageProps) {
     }, 0);
     return total;
   }, [alertDataForSelectedDate]);
+  // useEffect(() => {
+  //   window.location.replace(`${window.location.href}/detection`);
+  // }, []);
 
   //calculate the number of pages to paginated the data
+
   return (
     <>
       <Head>
@@ -98,7 +103,7 @@ export default function Home({ alertData }: AlertPageProps) {
                 className="border-none rounded-lg bg-gray-100 "
               />
             </div>
-            <h3 className="font-medium p-2">Hello, {session.data?.user.name}</h3>
+            <h3 className="font-medium p-2">Hello, {userName}</h3>
           </div>
           <AlertSummaryBox
             totalOrgs={alertDataForSelectedDate?.length}

@@ -6,8 +6,8 @@ type Props = {
 };
 function PaginationCard({ page, setPage, pagination }: Props) {
   return (
-    <div className="p-2 mt-2 flex overflow-hidden pr-10">
-    <div className="flex  border rounded-lg">
+    <div className="p-2 mt-2 flex overflow-hidden  ">
+      <div className="flex  flex-wrap border grid-gap justify-center rounded-lg">
         <button
           className="border-r p-1"
           disabled={page === 0}
@@ -31,9 +31,8 @@ function PaginationCard({ page, setPage, pagination }: Props) {
         {pagination.map((i) => (
           <button
             key={i + Math.random() * 10}
-            className={`p-1 border-r px-4  ${
-              page === i - 1 && "border border-blue-400"
-            }`}
+            className={`p-1 border-r px-4  ${page === i - 1 && "border border-blue-400"
+              }`}
             onClick={(e) => setPage(i - 1)}
           >
             {i}
