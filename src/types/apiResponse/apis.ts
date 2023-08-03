@@ -1,3 +1,5 @@
+import { Stats } from "fs";
+
 export interface AlertSummary {
   OrganizationId: string;
   OrganizationName?: string;
@@ -75,11 +77,22 @@ export interface detctionData {
   orgId: string;
   source: number;
 }
+
 export interface ModifiedDetectionData {
   orgId: string;
   orgName: string;
-  totalUploads: number;
   data: detctionData[];
+  stats: {
+    Epochs: number;
+    hr: number;
+    hrcc: number;
+    br: number;
+    brcc: number;
+  };
+}
+export interface ModifiedDetectionDataForSelectedDate {
+  stats: { Epochs: number; hr: number; hrcc: number; br: number; brcc: number };
+  data: ModifiedDetectionData[];
 }
 
 export interface DetectionStatsForSelectedDate {

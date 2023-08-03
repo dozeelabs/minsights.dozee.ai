@@ -1,10 +1,10 @@
 import React from "react";
 import { useRouter } from "next/router";
 
-function userpage() {
+function Userpage() {
   const router = useRouter();
 
   return <div>hello</div>;
 }
 
-export default userpage;
+export default Userpage;

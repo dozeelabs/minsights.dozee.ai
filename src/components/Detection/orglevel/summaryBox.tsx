@@ -2,19 +2,25 @@ import React, { SetStateAction } from "react";
 import MIN_DATE from "@/utils/minDate";
 
 type Props = {
-  totaluser: number;
+  totalDevice: number;
   orgName: string;
   dateInput: string;
   setDateInput: React.Dispatch<SetStateAction<string>>;
-  uploadsForSelecetedDate: number;
+  stats: {
+    Epochs: number;
+    hr: number;
+    hrcc: number;
+    br: number;
+    brcc: number;
+  };
 };
 
 function SummaryBox({
   orgName,
   dateInput,
   setDateInput,
-  uploadsForSelecetedDate,
-  totaluser,
+  totalDevice,
+  stats,
 }: Props) {
 
   return (
@@ -41,6 +47,7 @@ function SummaryBox({
           <div>
             {" "}
             <h3 className="p-1 font-medium">Detection Summary</h3>
+            <h5 className="p-1 font-medium">{orgName}</h5>
           </div>
           <div className="flex justify-between">
 
@@ -48,10 +55,26 @@ function SummaryBox({
               <span className="flex flex-row justify-between">
                 {" "}
                 <h4 className="font-medium p-1">
-                  Total Users: {totaluser}
+                  Total Devices: {totalDevice}
                 </h4>{" "}
                 <h4 className="font-medium p-1">
-                  Total uploads:
+                  Total Epochs: {stats.Epochs}
+                </h4>{" "}
+              </span>
+              <span className="flex flex-row justify-between">
+                <h4 className="font-medium p-1">
+                  HR : {Math.round((stats.hr / stats.Epochs) * 100)}%
+                </h4>{" "}
+                <h4 className="font-medium p-1">
+                  RR : {Math.round((stats.br / stats.Epochs) * 100)}%
+                </h4>{" "}
+              </span>
+              <span className="flex flex-row justify-between">
+                <h4 className="font-medium p-1">
+                  HRc : {Math.round((stats.hrcc / stats.Epochs) * 100)}%
+                </h4>{" "}
+                <h4 className="font-medium p-1">
+                  RRc : {Math.round((stats.brcc / stats.Epochs) * 100)}%
                 </h4>{" "}
               </span>
               <span>

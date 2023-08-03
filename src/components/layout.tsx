@@ -1,10 +1,9 @@
 import Head from "next/head";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { signOut } from "next-auth/react";
-import Link from "next/link";
 import { useRouter } from "next/router"
 import LeftMenu from "../components/leftMenu"
+import { Logout } from "@/utils/Auth";
 
 type LayoutPageProps = {
   children: React.ReactNode;
@@ -33,7 +32,7 @@ export default function Layout({ children }: LayoutPageProps) {
             <nav className="sticky top-0 bg-blue-theme z-50 shadow-lg p-1 px-2">
               <div className="flex justify-center items-center  ">
                 <LeftMenu
-                  operatorName={'test'}
+                  operatorName={''}
                   tabs={[
                     { tabTitle: 'Alerts', tabPath: '/' },
                     { tabTitle: 'Detections', tabPath: '/detection' },
@@ -43,7 +42,7 @@ export default function Layout({ children }: LayoutPageProps) {
                 <div className="right-3	absolute">
                   <button
                     className="p-1 border rounded flex justify-center gap-2 cursor-pointer"
-                    onClick={() => signOut()}
+                    onClick={Logout}
                   >
                     <span className="font-semibold text-white">Logout</span>
                   </button>

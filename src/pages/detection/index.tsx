@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { fetchAllDetectionData } from "@/utils/detectionDataModification";
-import { ModifiedDetectionData } from "../../types/apiResponse/apis";
+import { ModifiedDetectionData, ModifiedDetectionDataForSelectedDate } from "../../types/apiResponse/apis";
 import DetectionSummaryBox from "@/components/Detection/DetectionSummaryBox";
 import DetectionTableUi from "@/components/Detection/DetectionTableUi";
 import { parseCookie } from "@/utils/Auth";
@@ -27,20 +27,22 @@ export async function getServerSideProps<GetServerSideProps>(context: any) {
   }
 }
 
-
 function Index({ data }: any) {
   const [dateInput, setDateInput] = useState<string>(
     new Date().toLocaleDateString("fr-CA")
   );
 
-  const detectionDataForSelectedDate: ModifiedDetectionData[] = useMemo(() => {
-    return data[dateInput].sort(
-      (a: ModifiedDetectionData, b: ModifiedDetectionData) => {
-        return b.totalUploads - a.totalUploads;
+  const detectionDataForSelectedDate: ModifiedDetectionDataForSelectedDate =
+    useMemo(() => {
+      if (data[dateInput]) {
+        data[dateInput].data.sort(
+          (a: ModifiedDetectionData, b: ModifiedDetectionData) => {
+            return b.stats.Epochs - a.stats.Epochs;
+          }
+        );
       }
-    );
-  }, [dateInput]);
-
+      return data[dateInput];
+    }, [dateInput]);
   return (
     <>
       <Head>
@@ -75,7 +77,6 @@ function Index({ data }: any) {
             dateInput={dateInput}
             detectionDataForSelectedDate={detectionDataForSelectedDate}
           />
-
         </div>
       </main>
     </>

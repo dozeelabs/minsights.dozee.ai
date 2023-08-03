@@ -3,7 +3,6 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import Router from "next/router";
 import { getServerSession } from "next-auth";
 import { getDeviceDetails } from "../../utils/package/serverSideApiCalls";
-import axios from "axios";
 import { RecordsPageProps } from "../../types/pageProps/pageProps";
 import Link from 'next/link';
 import { Log, VictoryAxis, VictoryChart, VictoryLine } from "victory";
@@ -3496,7 +3495,7 @@ function Index() {
             let ts = moment(mockData2[i].Timestamp, "YYYY-MM-DDTHH:mm:ss.000ZZ").valueOf();
             let hrValue = mockData2[i].HeartRate
             if (hrValue <= 0) {
-                hrValue = null
+                hrValue = 0
             }
             finalValueArr.push({
                 x: ts / 1000,

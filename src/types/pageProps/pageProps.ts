@@ -6,6 +6,7 @@ import {
 
 export interface AlertPageProps {
   alertData: AlertSummary[];
+  userName: string;
 }
 export interface AlertOrgPageProps {
   data: AlertSummary[];
@@ -20,4 +21,3 @@ export interface RecordsPageProps {
   data: DeviceInformation[] | null;
   pairLogsDetails: DevicePairLogsResponse[];
 }
-
