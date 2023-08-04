@@ -63,7 +63,7 @@ jobs:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: ${{ github.repository }}
           IMAGE_TAG: ${{ steps.buildgen.outputs.BUILD_ID }}
-        working-directory: dozee/app
+        # working-directory: dozee/app
         run: |
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:latest-${GITHUB_REF##*/} .
           docker push -a $ECR_REGISTRY/$ECR_REPOSITORY
