@@ -16,21 +16,29 @@ interface Props {
 export async function getServerSideProps<GetServerSideProps>(context: any) {
   const { AccessToken } = parseCookie(context.req.headers.cookie);
   try {
-    const response = await fetchAllDetectionData(AccessToken);
+    let date = context.query.date;
+    if (!date) {
+      date = new Date().toLocaleDateString("fr-CA");
+    }
+    const response = await fetchAllDetectionData(AccessToken, date);
     const filteredData: any = {};
     for (let date in response) {
       filteredData[date] = response[date].data.filter((org: any) => {
         return org.orgId === context.query.orgId;
       });
     }
-
     if (filteredData.length === 0) {
       return {
         redirect: {
-          destination: "/detection",
+          destination: `/detection?date=${date}`,
           permanent: false,
         },
       };
+    }
+    if (filteredData[date]) {
+      filteredData[date][0].data.sort((a: detctionData, b: detctionData) => {
+        return b.Epochs - a.Epochs;
+      });
     }
     return {
       props: {
@@ -48,21 +56,8 @@ export async function getServerSideProps<GetServerSideProps>(context: any) {
     };
   }
 }
-function Index({ data, date, orgName }: any) {
-  const [dateInput, setDateInput] = useState<string>(
-    date ? date : new Date().toLocaleDateString("fr-CA")
-  );
-  console.log(data);
-
-  const dataForSelecetdDate: ModifiedDetectionData[] = useMemo(() => {
-    if (data[dateInput]) {
-      data[dateInput][0].data.sort((a: detctionData, b: detctionData) => {
-        return b.Epochs - a.Epochs;
-      });
-    }
-    return data[dateInput] || [];
-  }, [dateInput]);
-  console.log(dataForSelecetdDate);
+function Index({ data, date, orgName }: Props) {
+  const dataForSelecetdDate: ModifiedDetectionData[] = data[date];
 
   return (
 
@@ -76,8 +71,7 @@ function Index({ data, date, orgName }: any) {
       <SummaryBox
         totalDevice={dataForSelecetdDate[0]?.data.length}
         orgName={orgName}
-        setDateInput={setDateInput}
-        dateInput={dateInput}
+        dateInput={date}
         stats={dataForSelecetdDate[0]?.stats}
       />
 

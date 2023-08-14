@@ -62,7 +62,7 @@ function DetectionTableUi({ dateInput, detectionDataForSelectedDate }: Props) {
                   .map((org, i) => (
                     <tr
                       key={org.orgId}
-                      className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+                      className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 truncate overflow-hidden"
                     >
                       <th
                         scope="row"
@@ -71,37 +71,25 @@ function DetectionTableUi({ dateInput, detectionDataForSelectedDate }: Props) {
                         <Link
                           href={`/detection/${org.orgId}?date=${dateInput}`}
                         >
-                          <div className="font-semibold">
+                          <td className="font-semibold truncate overflow-hidden">
 
                             Org Id : {''}
                             {org.orgName}
 
-                          </div>
+                          </td>
                         </Link>
-                        <div className="flex flex-row justify-between">
-                          <div className=" ">
-                            <td className="pt-4 text-xs">Devices : {org.data.length}</td>
-                          </div>
-                          <div className="">
-                            <td className="pt-4 text-xs text-left">Epochs : {org.stats.Epochs}</td>
-                          </div>
-                        </div>
-                        <div className="flex flex-row justify-between">
-                          <div className=" ">
-                            <td className="pt-1 text-xs">HR% : {Math.round((org.stats.hr / org.stats.Epochs) * 100)}%</td>
-                          </div>
-                          <div className="">
-                            <td className="pt-1 text-xs">RR% : {Math.round((org.stats.br / org.stats.Epochs) * 100)}%</td>
-                          </div>
-                        </div>
-                        <div className="flex flex-row justify-between">
-                          <div className=" ">
-                            <td className="pt-1 text-xs text-left">HRC% : {Math.round((org.stats.hrcc / org.stats.Epochs) * 100)}%</td>
-                          </div>
-                          <div className="">
-                            <td className="pt-1 text-xs text-left">RRC% : {Math.round((org.stats.brcc / org.stats.Epochs) * 100)}%</td>
-                          </div>
-                        </div>
+                        <td className="flex flex-row justify-between overflow-hidden">
+                          <td className="pt-4 text-xs">Devices : {org.data.length}</td>
+                          <td className="pt-4 text-xs text-left">Epochs : {org.stats.Epochs}</td>
+                        </td>
+                        <td className="flex flex-row justify-between overflow-hidden">
+                          <td className="pt-1 text-xs">HR% : {Math.round((org.stats.hr / org.stats.Epochs) * 100)}%</td>
+                          <td className="pt-1 text-xs">RR% : {Math.round((org.stats.br / org.stats.Epochs) * 100)}%</td>
+                        </td>
+                        <td className="flex flex-row justify-between overflow-hidden">
+                          <td className="pt-1 text-xs text-left">HRC% : {Math.round((org.stats.hrcc / org.stats.Epochs) * 100)}%</td>
+                          <td className="pt-1 text-xs text-left">RRC% : {Math.round((org.stats.brcc / org.stats.Epochs) * 100)}%</td>
+                        </td>
                       </th>
                     </tr>
                   ))}

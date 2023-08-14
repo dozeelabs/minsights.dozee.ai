@@ -11,11 +11,24 @@ export async function getServerSideProps<GetServerSideProps>(context: any) {
   const { AccessToken } = parseCookie(context.req.headers.cookie);
 
   try {
-    const res = await fetchAllDetectionData(AccessToken);
+    let date = context.query.date;
+    if (!date) {
+      date = new Date().toLocaleDateString("fr-CA");
+    }
+    const res = await fetchAllDetectionData(AccessToken, date);
+
+    if (res[date]) {
+      res[date].data.sort(
+        (a: ModifiedDetectionData, b: ModifiedDetectionData) => {
+          return b.stats.Epochs - a.stats.Epochs;
+        }
+      );
+    }
 
     return {
       props: {
         data: res,
+        date: date,
       },
     };
   } catch {
@@ -27,22 +40,9 @@ export async function getServerSideProps<GetServerSideProps>(context: any) {
   }
 }
 
-function Index({ data }: any) {
-  const [dateInput, setDateInput] = useState<string>(
-    new Date().toLocaleDateString("fr-CA")
-  );
-
+function Index({ data, date }: any) {
   const detectionDataForSelectedDate: ModifiedDetectionDataForSelectedDate =
-    useMemo(() => {
-      if (data[dateInput]) {
-        data[dateInput].data.sort(
-          (a: ModifiedDetectionData, b: ModifiedDetectionData) => {
-            return b.stats.Epochs - a.stats.Epochs;
-          }
-        );
-      }
-      return data[dateInput];
-    }, [dateInput]);
+    data[date];
   return (
     <>
       <Head>
@@ -59,22 +59,21 @@ function Index({ data }: any) {
                 type="date"
                 min={MIN_DATE}
                 max={new Date().toLocaleDateString("fr-CA")}
-                value={dateInput}
+                value={date}
                 onChange={(e) => {
                   // setPage(0);
-                  setDateInput(e.target.value);
+                  window.location.replace(`/detection?date=${e.target.value}`);
                 }}
                 className="border-none rounded-lg bg-gray-100 "
               />
             </div>
           </div>
           <DetectionSummaryBox
-            dateInput={dateInput}
-            setDateInput={setDateInput}
+            dateInput={date}
             detectionDataForSelectedDate={detectionDataForSelectedDate}
           />
           <DetectionTableUi
-            dateInput={dateInput}
+            dateInput={date}
             detectionDataForSelectedDate={detectionDataForSelectedDate}
           />
         </div>

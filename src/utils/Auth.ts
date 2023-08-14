@@ -24,4 +24,4 @@ export function Logout() {
   deleteCookie("AccessToken");
   deleteCookie("selectedOrgId");
   window.location.reload();
-} 
+}

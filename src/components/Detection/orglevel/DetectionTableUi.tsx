@@ -69,22 +69,16 @@ function DetectionTableUi({ dataForSelecetdDate }: Props) {
                           </th>
 
                           <div className="flex flex-col">
-                            {/* <td className="pt-1 text-xs font-semibold"> User : {d.userId}</td> */}
                             <td className="pt-1 text-xs font-semibold"> Device : {i.DeviceId}</td>
-                            {/* <td className="pt-1 text-xs font-semibold">Detection Percentage : {m.true && m.false ? Math.round((m.true / (m.false * 4) * 100)) + '%' : "--"}</td> */}
                             <div className="flex flex-row justify-between">
 
                               <td className="pt-1 text-xs">Epochs :  {i.Epochs}</td>
-                              {/* <td className="pt-1 text-xs">Detection :  --</td> */}
                             </div>
 
                             <div className="flex flex-row justify-between">
 
                               <td className="pt-1 text-xs">HR : {i.hr ? Math.round((i.hr / i.Epochs) * 100) + "%" : "--"}</td>
                               <td className="pt-1 text-xs">RR : {i.br ? Math.round((i.br / i.Epochs) * 100) + "%" : "--"}</td>
-
-                              {/* <td className="pt-1 text-xs">HeartRates : {i.hr || "--"}</td>
-                              <td className="pt-1 text-xs">HeartRatesWithConfidence : {i.hrcc || "--"}</td> */}
                             </div>
                             <div className="flex flex-row justify-between">
                               <td className="pt-1 text-xs">HRc : {i.hrcc
