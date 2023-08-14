@@ -48,18 +48,18 @@ export async function getServerSideProps<GetServerSideProps>(context: any) {
       },
     };
   } catch {
-    return {
-      redirect: {
-        destination: "/detection",
-        permanent: false,
-      },
-    };
     // return {
-    //   props: {
-    //     alertData: [],
-    //     userName: decode["FirstName"],
+    //   redirect: {
+    //     destination: "/detection",
+    //     permanent: false,
     //   },
     // };
+    return {
+      props: {
+        alertData: [],
+        userName: decode["FirstName"],
+      },
+    };
   }
 }
 

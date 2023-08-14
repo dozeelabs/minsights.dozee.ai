@@ -5,7 +5,6 @@ type Props = {
   totalDevice: number;
   orgName: string;
   dateInput: string;
-  setDateInput: React.Dispatch<SetStateAction<string>>;
   stats: {
     Epochs: number;
     hr: number;
@@ -15,14 +14,7 @@ type Props = {
   };
 };
 
-function SummaryBox({
-  orgName,
-  dateInput,
-  setDateInput,
-  totalDevice,
-  stats,
-}: Props) {
-
+function SummaryBox({ orgName, dateInput, totalDevice, stats }: Props) {
   return (
     <div className="p-4 max-w-[1800px] m-auto flex flex-col  overflow-hidden">
       <div className="flex flex-row justify-between">
@@ -33,7 +25,9 @@ function SummaryBox({
             type="date"
             value={dateInput}
             onChange={(e) => {
-              setDateInput(e.target.value);
+              const [url] = window.location.href.split("?");
+              console.log(url);
+              window.location.replace(`${url}?date=${e.target.value}`);
             }}
             className="border-none rounded-lg bg-gray-100 "
           />

@@ -12,8 +12,12 @@ export function getAlertSummary(AccessToken: string) {
   });
 }
 
-export function getDetectionSummary(AccessToken: string, pageName: number) {
-  const url = `https://insights.gateway.dozee.cloud/api/detection/find?page=${pageName}`;
+export function getDetectionSummary(
+  AccessToken: string,
+  pageName: number,
+  date: string
+) {
+  const url = `https://insights.gateway.dozee.cloud/api/detection/find?date=${date}&page=${pageName}`;
   return axios({
     method: "get",
     maxBodyLength: Infinity,

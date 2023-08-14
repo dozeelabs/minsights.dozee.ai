@@ -55,11 +55,11 @@ function LeftMenu({ operatorName, tabs }: Props) {
                             </svg>
                         </button>
                     </div>
-                    <div className="p-1">
+                    {/* <div className="p-1">
                         <p className="font-semibold text-lg">
                             Hello {operatorName ? operatorName : ''},
                         </p>
-                    </div>
+                    </div> */}
                     <div
                         className="p-1 flex flex-col gap-4 mt-12 mb-12"
                         onClick={() => setMenu(false)}>

@@ -7,13 +7,11 @@ import {
 type props = {
   detectionDataForSelectedDate: ModifiedDetectionDataForSelectedDate;
   dateInput: string;
-  setDateInput: React.Dispatch<SetStateAction<string>>;
 };
 
 function DetectionSummaryBox({
   detectionDataForSelectedDate,
   dateInput,
-  setDateInput,
 }: props) {
   return (
     <div className="p-3 border rounded-2xl shadow-lg shadow-blue-200/60 flex flex-col ">
