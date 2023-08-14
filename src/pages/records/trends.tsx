@@ -1,7 +1,6 @@
 import Head from "next/head";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import Router from "next/router";
-import { getServerSession } from "next-auth";
 import { getDeviceDetails } from "../../utils/package/serverSideApiCalls";
 import { RecordsPageProps } from "../../types/pageProps/pageProps";
 import Link from 'next/link';
