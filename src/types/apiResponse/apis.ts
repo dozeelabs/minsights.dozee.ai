@@ -1,5 +1,3 @@
-import { Stats } from "fs";
-
 export interface AlertSummary {
   OrganizationId: string;
   OrganizationName?: string;
@@ -8,16 +6,6 @@ export interface AlertSummary {
   Devices: string[];
   Counts: number[];
   Sum: number;
-}
-export interface DetectionSummaryResponse {
-  OrganizationId: string;
-  OrganizationName?: string;
-  Date: string;
-  UserIds: string[];
-  DeviceIds: string[];
-  Counts: number[];
-  Sum: number;
-  Detected: boolean;
 }
 interface Firmware {
   Size: string;
@@ -76,6 +64,7 @@ export interface detctionData {
   hrcc: number | null;
   orgId: string;
   source: number;
+  ProcessableEpochs: number | null;
 }
 
 export interface ModifiedDetectionData {
@@ -88,10 +77,18 @@ export interface ModifiedDetectionData {
     hrcc: number;
     br: number;
     brcc: number;
+    ProcessableEpochs: number;
   };
 }
 export interface ModifiedDetectionDataForSelectedDate {
-  stats: { Epochs: number; hr: number; hrcc: number; br: number; brcc: number };
+  stats: {
+    Epochs: number;
+    hr: number;
+    hrcc: number;
+    br: number;
+    brcc: number;
+    ProcessableEpochs: number;
+  };
   data: ModifiedDetectionData[];
 }
 
