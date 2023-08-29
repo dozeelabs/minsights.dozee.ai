@@ -29,7 +29,7 @@ function DetectionSummaryBox({
                   Total orgs: {detectionDataForSelectedDate.data.length}
                 </h4>{" "}
                 <h4 className="font-medium p-1">
-                  Total epochs: {detectionDataForSelectedDate.stats.Epochs}
+                  ProcessableEpochs: {detectionDataForSelectedDate.stats.Epochs}
                 </h4>{" "}
               </span>
               <span className="flex flex-row justify-between">

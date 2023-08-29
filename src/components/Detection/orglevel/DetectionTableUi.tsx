@@ -72,7 +72,7 @@ function DetectionTableUi({ dataForSelecetdDate }: Props) {
                             <td className="pt-1 text-xs font-semibold"> Device : {i.DeviceId}</td>
                             <div className="flex flex-row justify-between">
 
-                              <td className="pt-1 text-xs">Epochs :  {i.Epochs}</td>
+                              <td className="pt-1 text-xs">ProcessableEpochs :  {i.Epochs}</td>
                             </div>
 
                             <div className="flex flex-row justify-between">
