@@ -1,4 +1,4 @@
-import { OrgNamesApiResponse } from "@/types/apiRespnse/apis";
+import { OrgNamesApiResponse } from "../types/apiResponse/apis"
 import { getDetectionSummary, getOrgName } from "./package/serverSideApiCalls";
 
 type id = {
