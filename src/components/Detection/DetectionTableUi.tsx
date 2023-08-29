@@ -80,7 +80,7 @@ function DetectionTableUi({ dateInput, detectionDataForSelectedDate }: Props) {
                         </Link>
                         <td className="flex flex-row justify-between overflow-hidden">
                           <td className="pt-4 text-xs">Devices : {org.data.length}</td>
-                          <td className="pt-4 text-xs text-left">Epochs : {org.stats.Epochs}</td>
+                          <td className="pt-4 text-xs text-left">ProcessableEpochs : {org.stats.Epochs}</td>
                         </td>
                         <td className="flex flex-row justify-between overflow-hidden">
                           <td className="pt-1 text-xs">HR% : {Math.round((org.stats.hr / org.stats.Epochs) * 100)}%</td>

@@ -52,7 +52,7 @@ function SummaryBox({ orgName, dateInput, totalDevice, stats }: Props) {
                   Total Devices: {totalDevice}
                 </h4>{" "}
                 <h4 className="font-medium p-1">
-                  Total Epochs: {stats.Epochs}
+                  ProcessableEpochs: {stats.Epochs}
                 </h4>{" "}
               </span>
               <span className="flex flex-row justify-between">
