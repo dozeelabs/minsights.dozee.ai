@@ -1,8 +1,8 @@
-import React, { SetStateAction, useMemo } from "react";
+import React from "react";
 import MIN_DATE from "@/utils/minDate";
+import percentage from "@/utils/percentage";
 import {
-  ModifiedDetectionDataForSelectedDate,
-  ModifiedDetectionData,
+  ModifiedDetectionDataForSelectedDate
 } from "@/types/apiResponse/apis";
 type props = {
   detectionDataForSelectedDate: ModifiedDetectionDataForSelectedDate;
@@ -29,47 +29,55 @@ function DetectionSummaryBox({
                   Total orgs: {detectionDataForSelectedDate.data.length}
                 </h4>{" "}
                 <h4 className="font-medium p-1">
-                  ProcessableEpochs: {detectionDataForSelectedDate.stats.Epochs}
+                  Epochs:{" "}{`${detectionDataForSelectedDate.stats.ProcessableEpochs} (${detectionDataForSelectedDate.stats.Epochs})`}
                 </h4>{" "}
               </span>
               <span className="flex flex-row justify-between">
                 <h4 className="font-medium p-1">
-                  HR: {" "}
-                  {Math.round(
-                    (detectionDataForSelectedDate.stats.hr /
-                      detectionDataForSelectedDate.stats.Epochs) *
-                    100
+                  HR:{" "}
+                  {`${percentage(
+                    detectionDataForSelectedDate.stats.hr,
+                    detectionDataForSelectedDate.stats.ProcessableEpochs
                   )}
-                  %
+              (${percentage(
+                    detectionDataForSelectedDate.stats.hr,
+                    detectionDataForSelectedDate.stats.Epochs
+                  )})%`}
                 </h4>{" "}
                 <h4 className="font-medium p-1">
-                  RR: {" "}
-                  {Math.round(
-                    (detectionDataForSelectedDate.stats.br /
-                      detectionDataForSelectedDate.stats.Epochs) *
-                    100
+                  RR:{" "}
+                  {`${percentage(
+                    detectionDataForSelectedDate.stats.br,
+                    detectionDataForSelectedDate.stats.ProcessableEpochs
                   )}
-                  %
+              (${percentage(
+                    detectionDataForSelectedDate.stats.br,
+                    detectionDataForSelectedDate.stats.Epochs
+                  )})%`}
                 </h4>{" "}
               </span>
               <span className="flex flex-row justify-between">
                 <h4 className="font-medium p-1">
-                  HRC: {" "}
-                  {Math.round(
-                    (detectionDataForSelectedDate.stats.hrcc /
-                      detectionDataForSelectedDate.stats.Epochs) *
-                    100
+                  HRC:{" "}
+                  {`${percentage(
+                    detectionDataForSelectedDate.stats.hrcc,
+                    detectionDataForSelectedDate.stats.ProcessableEpochs
                   )}
-                  %
+              (${percentage(
+                    detectionDataForSelectedDate.stats.hrcc,
+                    detectionDataForSelectedDate.stats.Epochs
+                  )})%`}
                 </h4>{" "}
                 <h4 className="font-medium p-1">
-                  RRC: {" "}
-                  {Math.round(
-                    (detectionDataForSelectedDate.stats.brcc /
-                      detectionDataForSelectedDate.stats.Epochs) *
-                    100
+                  RRC:{" "}
+                  {`${percentage(
+                    detectionDataForSelectedDate.stats.brcc,
+                    detectionDataForSelectedDate.stats.ProcessableEpochs
                   )}
-                  %
+              (${percentage(
+                    detectionDataForSelectedDate.stats.brcc,
+                    detectionDataForSelectedDate.stats.Epochs
+                  )})%`}
                 </h4>{" "}
               </span>
               <span>

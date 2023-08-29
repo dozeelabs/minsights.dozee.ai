@@ -1,4 +1,4 @@
-import { OrgNamesApiResponse } from "../types/apiResponse/apis";
+import { OrgNamesApiResponse } from "@/types/apiRespnse/apis";
 import { getDetectionSummary, getOrgName } from "./package/serverSideApiCalls";
 
 type id = {
@@ -13,6 +13,7 @@ type detection = {
   Epochs?: number;
   HeartRates?: number;
   HeartRatesWithConfidence?: number;
+  ProcessableEpochs?: number;
   _id: id;
 };
 type Stats = {
@@ -21,6 +22,7 @@ type Stats = {
   hrcc: number;
   br: number;
   brcc: number;
+  ProcessableEpochs?: number;
 };
 export async function fetchAllDetectionData(AccessToken: string, date: string) {
   let resultArr: any[] = [];
@@ -55,6 +57,7 @@ export async function modification(inputArr: detection[]) {
       br: curr.BreathRates || null,
       hrcc: curr.HeartRatesWithConfidence || null,
       brcc: curr.BreathRatesWithConfidence || null,
+      ProcessableEpochs: curr?.ProcessableEpochs || null,
     };
     if (!curr.Epochs) {
       continue;
@@ -98,6 +101,7 @@ export async function modification(inputArr: detection[]) {
           sum["hrcc"] += i.hrcc || 0;
           sum["br"] += i.br || 0;
           sum["brcc"] += i.brcc || 0;
+          sum.ProcessableEpochs += i.ProcessableEpochs;
           return sum;
         },
         {
@@ -106,6 +110,7 @@ export async function modification(inputArr: detection[]) {
           hrcc: 0,
           br: 0,
           brcc: 0,
+          ProcessableEpochs: 0,
         }
       );
       const temp = {
@@ -122,6 +127,7 @@ export async function modification(inputArr: detection[]) {
             sum["hrcc"] += i.stats.hrcc || 0;
             sum["br"] += i.stats.br || 0;
             sum["brcc"] += i.stats.brcc || 0;
+            sum.ProcessableEpochs += i.stats.ProcessableEpochs || 0;
             return sum;
           },
           {
@@ -130,6 +136,7 @@ export async function modification(inputArr: detection[]) {
             hrcc: 0,
             br: 0,
             brcc: 0,
+            ProcessableEpochs: 0,
           }
         );
         finalData[date].stats = stats;

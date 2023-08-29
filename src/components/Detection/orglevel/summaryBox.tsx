@@ -1,5 +1,6 @@
 import React, { SetStateAction } from "react";
 import MIN_DATE from "@/utils/minDate";
+import percentage from "@/utils/percentage";
 
 type Props = {
   totalDevice: number;
@@ -11,8 +12,10 @@ type Props = {
     hrcc: number;
     br: number;
     brcc: number;
+    ProcessableEpochs: number;
   };
 };
+
 
 function SummaryBox({ orgName, dateInput, totalDevice, stats }: Props) {
   return (
@@ -49,26 +52,43 @@ function SummaryBox({ orgName, dateInput, totalDevice, stats }: Props) {
               <span className="flex flex-row justify-between">
                 {" "}
                 <h4 className="font-medium p-1">
-                  Total Devices: {totalDevice}
+                  Devices: {totalDevice}
                 </h4>{" "}
                 <h4 className="font-medium p-1">
-                  ProcessableEpochs: {stats.Epochs}
-                </h4>{" "}
-              </span>
-              <span className="flex flex-row justify-between">
-                <h4 className="font-medium p-1">
-                  HR : {Math.round((stats.hr / stats.Epochs) * 100)}%
-                </h4>{" "}
-                <h4 className="font-medium p-1">
-                  RR : {Math.round((stats.br / stats.Epochs) * 100)}%
+                  Epochs:{" "}
+                  {`${stats.ProcessableEpochs || "--"} (${stats.Epochs})`}
                 </h4>{" "}
               </span>
               <span className="flex flex-row justify-between">
                 <h4 className="font-medium p-1">
-                  HRc : {Math.round((stats.hrcc / stats.Epochs) * 100)}%
+                  HR :{" "}
+                  {`${percentage(stats.hr, stats.ProcessableEpochs)} (${percentage(
+                    stats.hr,
+                    stats.Epochs
+                  )})%`}
                 </h4>{" "}
                 <h4 className="font-medium p-1">
-                  RRc : {Math.round((stats.brcc / stats.Epochs) * 100)}%
+                  RR :{" "}
+                  {`${percentage(stats.br, stats.ProcessableEpochs)} (${percentage(
+                    stats.br,
+                    stats.Epochs
+                  )})%`}
+                </h4>{" "}
+              </span>
+              <span className="flex flex-row justify-between">
+                <h4 className="font-medium p-1">
+                  HRc :{" "}
+                  {`${percentage(
+                    stats.hrcc,
+                    stats.ProcessableEpochs
+                  )} (${percentage(stats.hrcc, stats.Epochs)})%`}
+                </h4>{" "}
+                <h4 className="font-medium p-1">
+                  RRc :{" "}
+                  {`${percentage(
+                    stats.brcc,
+                    stats.ProcessableEpochs
+                  )} (${percentage(stats.brcc, stats.Epochs)})%`}
                 </h4>{" "}
               </span>
               <span>

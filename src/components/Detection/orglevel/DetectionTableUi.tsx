@@ -1,6 +1,8 @@
 import React, { useEffect, useMemo, useState } from "react";
 import PaginationCard from "@/components/paginationCard";
 import { detctionData } from "../../../types/apiResponse/apis";
+import percentage from "@/utils/percentage";
+
 const paginationConstant = 10;
 type Props = {
   dataForSelecetdDate: detctionData[];
@@ -72,20 +74,37 @@ function DetectionTableUi({ dataForSelecetdDate }: Props) {
                             <td className="pt-1 text-xs font-semibold"> Device : {i.DeviceId}</td>
                             <div className="flex flex-row justify-between">
 
-                              <td className="pt-1 text-xs">ProcessableEpochs :  {i.Epochs}</td>
+                              <td className="pt-1 text-xs">Epochs : {`${i.ProcessableEpochs || "--"
+                                } (${i.Epochs})`}</td>
                             </div>
 
                             <div className="flex flex-row justify-between">
 
-                              <td className="pt-1 text-xs">HR : {i.hr ? Math.round((i.hr / i.Epochs) * 100) + "%" : "--"}</td>
-                              <td className="pt-1 text-xs">RR : {i.br ? Math.round((i.br / i.Epochs) * 100) + "%" : "--"}</td>
-                            </div>
-                            <div className="flex flex-row justify-between">
-                              <td className="pt-1 text-xs">HRc : {i.hrcc
-                                ? Math.round((i.hrcc / i.Epochs) * 100) + "%"
+                              <td className="pt-1 text-xs">HR :{i.hr
+                                ? `${percentage(i.hr, i.ProcessableEpochs)} (${percentage(
+                                  i.hr,
+                                  i.Epochs
+                                )})%`
                                 : "--"}</td>
-                              <td className="pt-1 text-xs">RRc : {i.brcc
-                                ? Math.round((i.brcc / i.Epochs) * 100) + "%"
+                              <td className="pt-1 text-xs">RR :{i.br
+                                ? `${percentage(i.br, i.ProcessableEpochs)} (${percentage(
+                                  i.br,
+                                  i.Epochs
+                                )})%`
+                                : "--"}</td>
+                            </div>
+                            <div className="flex flex-row justify-between">
+                              <td className="pt-1 text-xs">HRc :{i.hrcc
+                                ? `${percentage(
+                                  i.hrcc,
+                                  i.ProcessableEpochs
+                                )} (${percentage(i.hrcc, i.Epochs)})%`
+                                : "--"}</td>
+                              <td className="pt-1 text-xs">RRc :{i.brcc
+                                ? `${percentage(
+                                  i.brcc,
+                                  i.ProcessableEpochs
+                                )} (${percentage(i.brcc, i.Epochs)})%`
                                 : "--"}</td>
                             </div>
                           </div>

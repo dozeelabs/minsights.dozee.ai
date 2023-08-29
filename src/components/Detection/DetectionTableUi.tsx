@@ -2,6 +2,7 @@ import React, { useEffect, useState, useMemo } from "react";
 import { ModifiedDetectionDataForSelectedDate } from "@/types/apiResponse/apis";
 import PaginationCard from "../paginationCard";
 import Link from "next/link";
+import percentage from "@/utils/percentage";
 const paginationConstant = 10;
 
 type Props = {
@@ -80,15 +81,42 @@ function DetectionTableUi({ dateInput, detectionDataForSelectedDate }: Props) {
                         </Link>
                         <td className="flex flex-row justify-between overflow-hidden">
                           <td className="pt-4 text-xs">Devices : {org.data.length}</td>
-                          <td className="pt-4 text-xs text-left">ProcessableEpochs : {org.stats.Epochs}</td>
+                          <td className="pt-4 text-xs text-left">Epochs :{`${org.stats.ProcessableEpochs || "--"} (${org.stats.Epochs
+                            })`}</td>
                         </td>
                         <td className="flex flex-row justify-between overflow-hidden">
-                          <td className="pt-1 text-xs">HR% : {Math.round((org.stats.hr / org.stats.Epochs) * 100)}%</td>
-                          <td className="pt-1 text-xs">RR% : {Math.round((org.stats.br / org.stats.Epochs) * 100)}%</td>
+                          <td className="pt-1 text-xs">HR% : {org.stats.hr
+                            ? `${percentage(
+                              org.stats.hr,
+                              org.stats.ProcessableEpochs
+                            )} (${percentage(org.stats.hr, org.stats.Epochs)})%`
+                            : "--"}</td>
+                          <td className="pt-1 text-xs">RR% :{org.stats.br
+                            ? `${percentage(
+                              org.stats.br,
+                              org.stats.ProcessableEpochs
+                            )} (${percentage(org.stats.br, org.stats.Epochs)})%`
+                            : "--"}</td>
                         </td>
                         <td className="flex flex-row justify-between overflow-hidden">
-                          <td className="pt-1 text-xs text-left">HRC% : {Math.round((org.stats.hrcc / org.stats.Epochs) * 100)}%</td>
-                          <td className="pt-1 text-xs text-left">RRC% : {Math.round((org.stats.brcc / org.stats.Epochs) * 100)}%</td>
+                          <td className="pt-1 text-xs text-left">HRC% :{org.stats.hrcc
+                            ? `${percentage(
+                              org.stats.hrcc,
+                              org.stats.ProcessableEpochs
+                            )} (${percentage(
+                              org.stats.hrcc,
+                              org.stats.Epochs
+                            )})%`
+                            : "--"}</td>
+                          <td className="pt-1 text-xs text-left">RRC% :{org.stats.brcc
+                            ? `${percentage(
+                              org.stats.brcc,
+                              org.stats.ProcessableEpochs
+                            )} (${percentage(
+                              org.stats.brcc,
+                              org.stats.Epochs
+                            )})%`
+                            : "--"}</td>
                         </td>
                       </th>
                     </tr>
